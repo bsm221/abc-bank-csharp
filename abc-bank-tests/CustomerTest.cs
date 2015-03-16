@@ -50,6 +50,22 @@ namespace abc_bank_tests
         }
 
         [TestMethod]
+        public void TestTransfer()
+        {
+            Account savings = new  Account(Account.SAVINGS);
+            Account checking = new Account(Account.CHECKING);
+
+            Customer bala = new Customer("Bala")
+                 .OpenAccount(savings);
+            bala.OpenAccount(checking);
+
+            bala.Accounts[0].Deposit(250.00);
+            bala.Accounts[1].Deposit(1.00);
+            bala.Transfer(savings, checking, 150.00);
+            Assert.AreEqual(151, bala.Accounts[1].sumTransactions());
+        }
+
+        [TestMethod]
         [Ignore]
         public void TestThreeAccounts()
         {

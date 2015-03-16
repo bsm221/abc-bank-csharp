@@ -42,26 +42,49 @@ namespace abc_bank
 
         public double InterestEarned() 
         {
+            //BM:  Changing the interest calculation to annual would entail changing sumTransactions() to return a collection of transactions
+            //     looping through the collection of transaction and calculating the daily balance and
+            //     then calculating the interest on a daily basis by looping through the criteria below. 
             double amount = sumTransactions();
+            
+            //Calculating the Interest Earned . BM
+            double interest = 0.00;
+
+
             switch(accountType){
                 case SAVINGS:
                     if (amount <= 1000)
-                        return amount * 0.001;
+                        interest =  amount * 0.001;
                     else
-                        return 1 + (amount-1000) * 0.002;
+                        interest =  1 + (amount-1000) * 0.002;
     //            case SUPER_SAVINGS:
     //                if (amount <= 4000)
     //                    return 20;
+                    break;
                 case MAXI_SAVINGS:
+                                           
                     if (amount <= 1000)
-                        return amount * 0.02;
+                        interest =  amount * 0.02;
                     if (amount <= 2000)
-                        return 20 + (amount-1000) * 0.05;
-                    return 70 + (amount-2000) * 0.1;
+                        if (transactions.FindAll(FindTrans).Find(x => x.amount < 0) == null)
+                            interest = 20 + (amount - 1000) * 0.05;
+                        else
+                            interest = 20 + (amount - 1000) * 0.01;
+                    else
+                        interest = 70 + (amount - 2000) * 0.1;
+                    break;
                 default:
-                    return amount * 0.001;
+                    interest = amount * 0.001;
+                    break;
             }
+            return interest;
         }
+
+        private bool FindTrans(Transaction tran)
+        {
+            return tran.transactionDate.CompareTo(DateTime.Now.AddDays(-10)) > 1;
+        }
+
 
         public double sumTransactions() {
            return CheckIfTransactionsExist(true);
